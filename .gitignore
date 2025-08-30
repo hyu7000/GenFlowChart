@@ -1,0 +1,11 @@
+
+/_TestFile/
+/_TestFile/**
+/.vscode/
+/.vscode/**
+/build/
+/build/**
+/dist/
+/dist/**
+*.docx
+*.bat

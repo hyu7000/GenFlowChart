@@ -1,0 +1,53 @@
+name: ConfigCode
+channels:
+  - conda-forge
+  - defaults
+  - https://repo.anaconda.com/pkgs/main
+  - https://repo.anaconda.com/pkgs/r
+  - https://repo.anaconda.com/pkgs/msys2
+dependencies:
+  - aiohappyeyeballs=2.6.1=pyhd8ed1ab_0
+  - aiohttp=3.12.15=py310hdb0e946_0
+  - aiosignal=1.4.0=pyhd8ed1ab_0
+  - async-timeout=5.0.1=pyhd8ed1ab_1
+  - attrs=25.3.0=pyh71513ae_0
+  - bzip2=1.0.8=h2bbff1b_6
+  - ca-certificates=2025.8.3=h4c7d964_0
+  - frozenlist=1.7.0=py310had1666a_0
+  - idna=3.10=pyhd8ed1ab_1
+  - libffi=3.4.4=hd77b12b_1
+  - multidict=6.6.3=py310hdb0e946_0
+  - openssl=3.5.2=h725018a_0
+  - pip=25.1=pyhc872135_2
+  - propcache=0.3.1=py310h38315fa_0
+  - pydot=1.2.4=py_0
+  - pyparsing=3.2.3=pyhd8ed1ab_1
+  - python=3.10.16=h4607a30_1
+  - python_abi=3.10=2_cp310
+  - qasync=0.27.1=pyh9208f05_1
+  - setuptools=78.1.1=py310haa95532_0
+  - sqlite=3.45.3=h2bbff1b_0
+  - tk=8.6.14=h0416ee5_0
+  - typing_extensions=4.15.0=pyhcf101f3_0
+  - tzdata=2025b=h04d1e81_0
+  - ucrt=10.0.22621.0=h57928b3_1
+  - vc=14.42=haa95532_5
+  - vc14_runtime=14.44.35208=h818238b_31
+  - vcomp14=14.44.35208=h818238b_31
+  - vs2015_runtime=14.44.35208=h38c0c73_31
+  - wheel=0.45.1=py310haa95532_0
+  - xz=5.6.4=h4754444_1
+  - yarl=1.20.1=py310h38315fa_0
+  - zlib=1.2.13=h8cc25b3_1
+  - pip:
+      - altgraph==0.17.4
+      - lxml==5.4.0
+      - packaging==25.0
+      - pefile==2023.2.7
+      - pyinstaller==6.14.0
+      - pyinstaller-hooks-contrib==2025.4
+      - python-docx==1.1.2
+      - pywin32==310
+      - pywin32-ctypes==0.2.3
+      - typing-extensions==4.13.2
+prefix: C:\Users\user\anaconda3\envs\ConfigCode
