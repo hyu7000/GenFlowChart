@@ -34,7 +34,7 @@ class SwitchParser:
 
     def _parse_cases(self, body: str):
         # case / default 키워드 찾기
-        pattern = re.compile(r"(case\s+.*?:|default\s*:)")
+        pattern = re.compile(r"(case\s+.*?:|default\s*:)") 
         matches = list(pattern.finditer(body))
 
         for idx, match in enumerate(matches):
@@ -49,8 +49,20 @@ class SwitchParser:
             else:
                 self.condition.append("default")
 
-            # 내용 (다음 case 전까지, 보통 break; 포함)
+            # 내용 (다음 case 전까지)
             segment = body[start:end].strip()
+
+            # ✅ case 블록이 { } 로 감싸져 있으면 제거
+            if segment.startswith("{") and segment.endswith("}"):
+                try:
+                    open_idx = segment.find("{")
+                    close_idx = self._match_brackets(segment, open_idx, "{", "}")
+                    # 전체가 한 쌍의 중괄호로 감싸진 경우만 제거
+                    if close_idx == len(segment) - 1:
+                        segment = segment[open_idx + 1:close_idx].strip()
+                except Exception:
+                    pass  # 불일치 시 그냥 둠
+
             self.conditionContent.append(segment)
 
     def _remove_comments(self, text: str) -> str:
@@ -79,8 +91,13 @@ if __name__ == "__main__":
     sample = """
     switch(mode) {
         case 0:
-            x = 1;
+        {
+            if(True)
+            {
+                x = 1;
+            }
             break;
+        }
         case 1:
             y = 2;
             break;

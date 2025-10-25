@@ -26,9 +26,6 @@ class FunctionParser:
         for fname, body in self.func_dict.items():
             content = body.strip()[1:-1]  # {, } 제거
 
-            if(fname == "SmuIf_ClearIgcsAlarm"):
-                pass
-
             tokens = self._split_by_blocks(content)
             result[fname] = tokens
 
@@ -58,12 +55,13 @@ class FunctionParser:
             if matched:
                 if matched == "do":
                     start = i
-                    block, end = self._extract_control_block(content, i, matched)
+                    block, end = self._extract_do_while(content, i)
 
                     parser = DoWhileParser(block.strip())
                     doWhileNode = DoWhileNode()
                     doWhileNode.set_condition(parser.condition)
                     body_tokens = self._split_by_blocks(parser.content)
+                    doWhileNode.add_child(body_tokens)
                     segments.append(doWhileNode)
                     i = end
 
@@ -111,6 +109,7 @@ class FunctionParser:
                     whileNode = WhileNode()                
                     whileNode.set_condition(parser.condition)
                     body_tokens = self._split_by_blocks(parser.content)
+                    whileNode.add_child(body_tokens)
                     segments.append(whileNode)
                     i = end
             else:

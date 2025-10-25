@@ -80,18 +80,30 @@ class CodeParser:
         ')' 직전의 identifier를 함수명으로 추출
         예: int foo(int a) → foo
         """
-        # 공백/개행 제거
         temp = before.rstrip()
-        # 마지막 '(' 찾기
-        pos = temp.rfind("(")
-        if pos == -1:
-            return None
-        # '(' 앞 토큰이 함수명
-        token_part = temp[:pos].strip().split()
+
+        # 내부 괄호들 제거 (P2VAR(...) 같은 매크로 오탐 방지)
+        # 괄호 깊이를 추적하면서 완전한 (...) 블록을 제거
+        result = []
+        depth = 0
+        for ch in temp:
+            if ch == '(':
+                depth += 1
+            elif ch == ')':
+                depth -= 1
+                if depth < 0:  # 불균형 시 안전장치
+                    depth = 0
+                continue
+            elif depth == 0:
+                result.append(ch)
+        cleaned = ''.join(result)
+
+        # 이제 매개변수 목록이 제거된 상태
+        token_part = cleaned.strip().split()
         if not token_part:
             return None
-        candidate = token_part[-1]
-        # 함수명 유효성 체크 (선택)
+
+        candidate = token_part[-1].strip('*(')
         if re.match(r"^[A-Za-z_]\w*$", candidate):
             return candidate
         return None
@@ -100,7 +112,7 @@ class CodeParser:
         return self.functions
 
 if __name__ == "__main__":
-    parser = CodeParser(r"D:\02_Projects\12_FlowChartGenerator\_TestFile\SmuIf.c")
+    parser = CodeParser(r"C:\Users\hkpark\Desktop\_TestFile\_TestFile\Test.c")
     functions = parser.GetFunctionList()
     for name, body in functions.items():
         print(f"Function: {name}\nBody:\n{body}\n")
