@@ -169,8 +169,8 @@ class FlowChartVisualizer:
 
             elif isinstance(child, IfNode):    
                 children_with_variable_list = child.child
-                temp_cur_node_list = []     
-                temp_start_branch_list = ''
+                pre_branch_condition_code = ''
+                branch_label = ''
 
                 count_of_branch = len(child.condition)
                 branch_node = FlowIfBranchNode(count_of_branch)
@@ -182,44 +182,42 @@ class FlowChartVisualizer:
                     # 조건확인 코드 노드 생성
                     # 첫번째 분기                    
                     if index == 0:
+                        branch_label = 'True'
                         condition_code = child.condition[index]      
                         child_identifier, count = self.generate_edge_node_in_run_shape(condition_code, edge_label, 'diamond')
-
                         branch_node.set_true_endpoint(child_identifier)
 
                     # 그외
-                    else:
-                        self.cur_node = [temp_start_branch_list]
+                    else:                        
+                        self.cur_node = [pre_branch_condition_code]
                         condition_code = child.condition[index]
+
+                        # else if 분기
                         if condition_code:
+                            branch_label = 'True'
                             child_identifier, count = self.generate_edge_node_in_run_shape(condition_code, edge_label='False', shape_of_node = 'diamond')                                                                           
                             branch_node.set_true_endpoint(child_identifier)
-                        # else code 에 빈공간일시             
-                        elif len(child_list) == 0:
-                            temp_cur_node_list.append(temp_start_branch_list)
-                            self.is_need_label_at_last_node = True
-                            branch_node.set_false_endpoint(temp_start_branch_list)
-                        # else code 에 코드가 있을 시
+                        # else 분기
                         else:
-                            branch_node.set_false_endpoint(temp_start_branch_list)
+                            branch_label = 'False'
+                            branch_node.set_false_endpoint(pre_branch_condition_code)
 
                     # 현 분기의 False 시작을 위해 임시 저장
-                    temp_start_branch_list = child_identifier
+                    pre_branch_condition_code = child_identifier
 
                     # 조건 코드 노드 생성
-                    child_identifier, count = self.generate_flow(child_list, first_edge_label = 'True', parent_flow_node = branch_node)
+                    child_identifier, count = self.generate_flow(child_list, first_edge_label = branch_label, parent_flow_node = branch_node)
 
                     if len(child_list) != 0 and child_identifier:
                         branch_node.set_normal_endpoint(child_identifier, index)
+                        if branch_label == 'True':
+                            branch_node.clear_true_endpoint()
+                        elif branch_label == 'False':
+                            branch_node.clear_false_endpoint()
 
                     # 마지막 분기인데 else가 없을 경우
                     if (index == len(children_with_variable_list) - 1) and not child.has_else_branch():
-                        temp_cur_node_list.append(temp_start_branch_list)
-                        self.is_need_label_at_last_node = True
-                        branch_node.set_false_endpoint(temp_start_branch_list)
-                
-                # 현재 노드 값 저장
-                self.cur_node = temp_cur_node_list.copy()
+                        branch_node.set_false_endpoint(pre_branch_condition_code)
 
             elif isinstance(child, SwitchNode):
                 children_with_variable_list = child.child

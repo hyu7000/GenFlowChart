@@ -16,7 +16,7 @@ functionE -> "flag2==2__0"  [label=""];
 "var5++;__0" [label="var5++;", shape=rectangle];
 "var1++;__0" -> "var5++;__0"  [label=""];
 "var3++;__0" [label="var3++;", shape=rectangle];
-"flag4==4__0" -> "var3++;__0"  [label=True];
+"flag4==4__0" -> "var3++;__0"  [label=False];
 "b++;__0" [label="b++;", shape=rectangle];
 "var4++;__0" -> "b++;__0"  [label=""];
 "var5++;__0" -> "b++;__0"  [label=""];
