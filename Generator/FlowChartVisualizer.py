@@ -479,8 +479,3 @@ class FlowChartVisualizer:
         file_path = os.path.join(FlowChartVisualizer.folder_path, fileName)
 
         graph.write_png(f"{file_path}.png", encoding = 'UTF-8')
-
-if __name__ == '__main__':
-    testCase1 = False
-    testCase2 = False
-    testCase3 = True

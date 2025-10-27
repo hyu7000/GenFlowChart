@@ -54,8 +54,11 @@ class CodeParser:
                     i = end + 1
                     continue
 
+                # --- [6] 함수 바디 평탄화
+                flat_block = self._flatten_blocks(block)
+
                 # 함수 저장
-                functions[func_name] = block
+                functions[func_name] = flat_block
 
                 i = end + 1
             else:
@@ -108,11 +111,48 @@ class CodeParser:
             return candidate
         return None
 
+    def _flatten_blocks(self, block: str, is_top_level: bool = True) -> str:
+        """
+        중첩된 의미 없는 { ... } 블록을 재귀적으로 제거
+        """
+        block = block.strip()
+        if not block.startswith("{") or not block.endswith("}"):
+            return block
+
+        # 내부 내용만 추출
+        inner = block[1:-1].strip()
+
+        # --- 내부 블록들 재귀적으로 탐색 ---
+        i = 0
+        result = ""
+        while i < len(inner):
+            ch = inner[i]
+            if ch == "{":
+                sub_block, end = self._extract_block(inner, i)
+                flattened = self._flatten_blocks(sub_block, is_top_level=False)
+                result += flattened
+                i = end + 1
+            else:
+                result += ch
+                i += 1
+
+        # --- 최상위 블록은 유지, 내부는 판단 후 제거 ---
+        cleaned = result.strip()
+        if not is_top_level:
+            # 의미 있는 코드가 있는지 판단
+            if not re.search(r"\b(if|for|while|switch|do|return|int|char|float|double|struct)\b", cleaned):
+                # 내부 코드만 반환 (즉, 중괄호 제거)
+                return cleaned
+
+        return "{\n" + cleaned + "\n}"
+
+
+
     def GetFunctionList(self) -> dict:
         return self.functions
 
 if __name__ == "__main__":
-    parser = CodeParser(r"C:\Users\hkpark\Desktop\_TestFile\_TestFile\Test.c")
+    parser = CodeParser(r"D:\02_Projects\12_FlowChartGenerator\_TestFile\Test.c")
     functions = parser.GetFunctionList()
     for name, body in functions.items():
         print(f"Function: {name}\nBody:\n{body}\n")
